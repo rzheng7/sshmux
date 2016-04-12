@@ -31,29 +31,33 @@ T_ARG=""
 SSHMUX_VERBOSE=""
 SSHMUX_ARGS=""
 read_tmux_session_name "$@"
-echo $SSHMUX_ARGS
 if [ -z $T_ARG ]; then
     export T_ARG=default
 fi
 
 RETRY_IN=1
-LAST_FAIL_TIME=`date +%s`
+INIT_TIME=`date +%s`
+LAST_FAIL_TIME=$INIT_TIME
 while ! ssh $SSHMUX_ARGS -o ConnectTimeout=0 -o ServerAliveInterval=3 -o ServerAliveCountmax=2 -t "tmux attach -t $T_ARG || tmux new -s $T_ARG" 2>/tmp/.sshmux_log
 do
+    CURRENT_TIME=`date +%s`
+    if [ $CURRENT_TIME -lt $(($INIT_TIME + 2)) ]; then
+        cat /tmp/.sshmux_log
+        exit 1;
+    fi
     tput cup 0 0
     tput el
     tput el1
     
-    CURRENT_TIME=`date +%s`
     if [ $(($LAST_FAIL_TIME + $RETRY_IN / 2 + 5)) -lt $CURRENT_TIME ]; then # we have succeeded since the last failure
         LAST_FAIL_TIME=$CURRENT_TIME
         RETRY_IN=1
     fi
 
+
     python -c 'import datetime; import sys; sys.stdout.write(
         "\033[94m%s: Connection lost: retrying in %d seconds (Press enter to try again now)\033[0m\r" % 
             (datetime.datetime.now().strftime("%H:%M.%S"), '$RETRY_IN'))'
-
     if [ $SSHMUX_VERBOSE ]; then
         echo ''
         cat /tmp/.sshmux_log
