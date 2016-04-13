@@ -20,7 +20,7 @@ Sshmux is a simple bash wrapper around ssh. It is platform independent, works wi
 
 <h3>Named Sessions</h3>
 
-You do not need to know tmux to use sshmux and only want the persistent server feature. But if you do know tmux, 
+You do not need to know tmux to use sshmux for persistent ssh sessions. But if you do know tmux, 
 you'll immediately notice
 that sshmux creates a tmux session with the name "default" by default. If you want to create a second tmux session with the name
 "session2", you can use the `-t` flag as in `tmux attach -t session2`:
@@ -45,7 +45,7 @@ side persistence by default.
 
 Mosh is another tool supporting persistent ssh sessions, having additional features including immediate
 local rendering of keyboard inputs and UDP connections for improved performance. However, the UDP feature requires the user
-to reconfigure the server's firewall prior to using mosh. This requirement is in many cases not satisfiable in commercial environments.
+to reconfigure the server's firewall prior to using mosh. This requirement adds significant overhead to setting up mosh on a new server, and is in many cases not satisfiable in commercial environments.
 
-Unlike both autossh and mosh, sshmux has no binary distribution and is instead bash wrapper, exposing exactly the same flags and 
+Unlike both autossh and mosh, sshmux has no binary distribution and is instead a bash wrapper, exposing exactly the same flags and 
 features as the traditional ssh tool.
