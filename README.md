@@ -2,7 +2,7 @@
 <h2>Usage</h2>
 
 sshmux makes your ssh sessions more robust by hosting server sessions in tmux and adding client side reconnect logic.
-The simplest usage is
+The simplest usage (which requires tmux on the server) is:
 
     $ sshmux me@myserver
 
