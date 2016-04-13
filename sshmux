@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+trap "exit 1" SIGTSTP
+
 read_tmux_session_name() {
     ARGS=""
     
@@ -41,7 +43,7 @@ LAST_FAIL_TIME=$INIT_TIME
 while ! ssh $SSHMUX_ARGS -o ConnectTimeout=0 -o ServerAliveInterval=3 -o ServerAliveCountmax=2 -t "tmux attach -t $T_ARG || tmux new -s $T_ARG" 2>/tmp/.sshmux_log
 do
     CURRENT_TIME=`date +%s`
-    if [ $CURRENT_TIME -lt $(($INIT_TIME + 2)) ]; then
+    if [ $CURRENT_TIME -lt $(($INIT_TIME + 10)) ]; then
         cat /tmp/.sshmux_log
         exit 1;
     fi
