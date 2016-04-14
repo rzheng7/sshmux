@@ -19,6 +19,9 @@ read_tmux_session_name() {
         ARGS="$ARGS $1"
         export SSHMUX_VERBOSE=true
         ;;
+        --ls)
+        export TMUX_LS="ls"
+        ;;
         *)
         ARGS="$ARGS $1"
                 # unknown option
@@ -29,12 +32,17 @@ read_tmux_session_name() {
     export SSHMUX_ARGS=$ARGS
 }
 
+TMUX_LS=""
 T_ARG=""
 SSHMUX_VERBOSE=""
 SSHMUX_ARGS=""
 read_tmux_session_name "$@"
 if [ -z $T_ARG ]; then
     export T_ARG=default
+fi
+if [ ! -z $TMUX_LS ]; then
+    ssh $SSHMUX_ARGS -t 'tmux ls'
+    exit 1
 fi
 
 RETRY_IN=1

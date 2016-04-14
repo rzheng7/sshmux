@@ -30,6 +30,14 @@ that sshmux creates a tmux session with the name "default" by default. If you wa
 This will create a new session if no session beginning with the letters "session2" exists, and join an existing session otherwise.
 The original `-t` flag of ssh is not supported when using sshmux (sshmux already uses this flag internally).
 
+<h3>List available sessions</h3>
+
+If you're trying to remember what sessions are already open on the server, you can use the `--ls` flag, as in:
+
+    $ sshmux me@myserver --ls
+
+This will run 'tmux ls' on the server, print the results to your local terminal, and exit.
+
 <h3>Debugging</h3>
 
 If sshmux isn't connecting well, you can pass it the `-v` flag for more verbose output, as you would do with ssh.
