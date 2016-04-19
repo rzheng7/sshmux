@@ -48,7 +48,7 @@ fi
 RETRY_IN=1
 INIT_TIME=`date +%s`
 LAST_FAIL_TIME=$INIT_TIME
-while ! ssh $SSHMUX_ARGS -o ConnectTimeout=0 -o ServerAliveInterval=3 -o ServerAliveCountmax=2 -t "tmux attach -t $T_ARG || tmux new -s $T_ARG" 2>/tmp/.sshmux_log
+while ! ssh $SSHMUX_ARGS -o ConnectTimeout=0 -o ServerAliveInterval=5 -o ServerAliveCountmax=2 -t "tmux attach -t $T_ARG || tmux new -s $T_ARG" 2>/tmp/.sshmux_log
 do
     CURRENT_TIME=`date +%s`
     if [ $CURRENT_TIME -lt $(($INIT_TIME + 10)) ]; then
@@ -58,7 +58,7 @@ do
     tput cup 0 0
     tput el
     tput el1
-    
+
     if [ $(($LAST_FAIL_TIME + $RETRY_IN / 2 + 5)) -lt $CURRENT_TIME ]; then # we have succeeded since the last failure
         LAST_FAIL_TIME=$CURRENT_TIME
         RETRY_IN=1
