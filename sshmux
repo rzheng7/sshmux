@@ -19,12 +19,16 @@ read_tmux_session_name() {
         ARGS="$ARGS $1"
         export SSHMUX_VERBOSE=true
         ;;
+        --tmux-path)
+        export TMUX_PATH="$2"
+        shift # past argument
+        ;;
         --ls)
         export TMUX_LS="ls"
         ;;
         *)
+        # unknown option
         ARGS="$ARGS $1"
-                # unknown option
         ;;
     esac
     shift # past argument or value
@@ -36,19 +40,20 @@ TMUX_LS=""
 T_ARG=""
 SSHMUX_VERBOSE=""
 SSHMUX_ARGS=""
+TMUX_PATH=""
 read_tmux_session_name "$@"
 if [ -z $T_ARG ]; then
     export T_ARG=default
 fi
 if [ ! -z $TMUX_LS ]; then
-    ssh $SSHMUX_ARGS -t 'tmux ls'
+    ssh $SSHMUX_ARGS -t "export PATH=\$PATH:${TMUX_PATH}; tmux ls"
     exit 1
 fi
 
 RETRY_IN=1
 INIT_TIME=`date +%s`
 LAST_FAIL_TIME=$INIT_TIME
-while ! ssh $SSHMUX_ARGS -o ConnectTimeout=0 -o ServerAliveInterval=5 -o ServerAliveCountmax=2 -t "tmux attach -t $T_ARG || tmux new -s $T_ARG" 2>/tmp/.sshmux_log
+while ! ssh $SSHMUX_ARGS -o ConnectTimeout=0 -o ServerAliveInterval=5 -o ServerAliveCountmax=2 -t "export PATH=\$PATH:$TMUX_PATH; tmux attach -t $T_ARG || tmux new -s $T_ARG" 2>/tmp/.sshmux_log
 do
     CURRENT_TIME=`date +%s`
     if [ $CURRENT_TIME -lt $(($INIT_TIME + 10)) ]; then

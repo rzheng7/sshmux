@@ -45,6 +45,16 @@ If you want to kill the sshmux process locally without disturbing a script runni
 local terminal emulator or passing a SIGTSTP with ctrl-Z. These are safer than killing sshmux with ctrl-C, as they will not risk
 killing your remote script.
 
+<h3>What to do if your server doesn't have tmux</h3>
+
+You can install tmux without root using a script such as https://github.com/jealie/install_tmux/blob/master/install_tmux.sh.
+sshmux then allows you to supply a PATH variable of directories in which to search for tmux using the --tmux-path argument. For example, if tmux is installed to one server on /home/user/local/bin/tmux, you could use:
+
+    $ sshmux --tmux-path /home/user/local/bin me@myserver
+    
+Note that --tmux-path simply appends the supplied string to the $PATH variable before calling tmux, so the above command
+will also work on a different server where tmux was not installed to that directory, but just exists in /usr/bin/tmux. Thus, if you do find yourself needing to install tmux from source on some servers, you can add something like `alias sshmux='sshmux --tmux-path /path/for/server1:/path/for/server2' and avoid typing out --tmux-path by hand.
+
 <h3>Comparison to other tools</h3>
 
 sshmux is related to <a href="http://www.harding.motd.ca/autossh/">autossh</a> and <a href="https://mosh.mit.edu/">mosh</a>. Like sshmux,
