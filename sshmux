@@ -53,7 +53,7 @@ fi
 RETRY_IN=1
 INIT_TIME=`date +%s`
 LAST_FAIL_TIME=$INIT_TIME
-while ! ssh $SSHMUX_ARGS -o ConnectTimeout=0 -o ServerAliveInterval=5 -o ServerAliveCountmax=2 -t "export PATH=\$PATH:$TMUX_PATH; tmux attach -t $T_ARG || tmux new -s $T_ARG" 2>/tmp/.sshmux_log
+while ! ssh $SSHMUX_ARGS -o ConnectTimeout=0 -o ServerAliveInterval=5 -o ServerAliveCountmax=2 -t "export PATH=\$PATH:$TMUX_PATH; tmux -2 attach -t $T_ARG || tmux -2 new -s $T_ARG" 2>/tmp/.sshmux_log
 do
     CURRENT_TIME=`date +%s`
     if [ $CURRENT_TIME -lt $(($INIT_TIME + 10)) ]; then
